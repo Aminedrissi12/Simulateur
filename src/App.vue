@@ -213,7 +213,7 @@ export default {
   async beforeCreate() {
     // get data from the server befre create
     await axios
-      .get(`http://localhost:3000/api/v1/kits`)
+      .get(`https://api-simulatuer.onrender.com/api/v1/kits`)
       .then(({ data }) => {
         console.log(data.kits)
         // sort data with puissance
