@@ -10,7 +10,7 @@
 
     <div class="content1">
       <div class="kits">
-        <img :src="this.kits220[selected - 1].img" />
+        <img :src="this.kits220[selected - 1].image" />
         <div class="item-info">
           <div class="item-info-title">
             <span> {{ this.kits220[selected - 1].title }} </span>
