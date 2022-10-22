@@ -215,7 +215,6 @@ export default {
     await axios
       .get(`https://api-simulatuer.onrender.com/api/v1/kits`)
       .then(({ data }) => {
-        console.log(data.kits)
         // sort data with puissance
         const vl = data.kits.sort((a, b) => a.puissance - b.puissance)
         //  filter data with tension
@@ -282,7 +281,6 @@ export default {
     select(sel) {
       if (sel > 3) {
         this.scaleEnd = 26000
-        console.log(this.calcule)
       } else if (sel <= 3) {
         this.scaleEnd = 10000
       }
