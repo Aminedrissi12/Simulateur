@@ -214,9 +214,9 @@ export default {
     Zone,
     InputSwitch,
   },
-  created() {
+  async beforeCreate() {
     // get data from the server befre create
-    axios
+    await axios
       .get(`https://api-simulatuer.onrender.com/api/v1/kits`)
       .then(({ data }) => {
         // sort data with puissance
@@ -229,11 +229,34 @@ export default {
             this.kits220.push(vlue)
           }
         }
-        this.handleResize()
       })
       .catch((err) => {
         return err
       })
+    this.handleResize()
+  },
+
+  created() {
+    // get data from the server befre create :: https://ng-simulator-off-grid.vercel.app/assets/files/kits.json
+    // https://api-simulatuer.onrender.com/api/v1/kits
+    // axios
+    //   .get(`https://ng-simulator-off-grid.vercel.app/assets/files/kits.json`)
+    //   .then(({ data }) => {
+    //     // sort data with puissance
+    //     const vl = data.kits.sort((a, b) => a.puissance - b.puissance)
+    //     //  filter data with tension
+    //     for (const vlue of vl) {
+    //       if (vlue.tension === 12) {
+    //         this.kits12.push(vlue)
+    //       } else if (vlue.tension === 220) {
+    //         this.kits220.push(vlue)
+    //       }
+    //     }
+    //     this.handleResize()
+    //   })
+    //   .catch((err) => {
+    //     return err
+    //   })
     this.kitsItem = this.kits220
     this.zoneData = this.zonesData[0]
     window.addEventListener('resize', this.handleResize)
@@ -261,9 +284,9 @@ export default {
               `
     },
   },
-  mounted() {
-    this.handleResize()
-  },
+  // mounted() {
+  //   this.handleResize()
+  // },
   methods: {
     increment() {
       if (Object.keys(this.kitsItem).length !== this.selected) {
