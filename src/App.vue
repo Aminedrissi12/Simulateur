@@ -10,10 +10,12 @@
 
     <div class="content1">
       <div class="kits">
-        <img :src="this.kits220[selected - 1].image" />
+        <img :src="this.kitsItem[selected - 1].image" />
+
         <div class="item-info">
+          <input-switch @changVoltKits="changVoltKits" />
           <div class="item-info-title">
-            <span> {{ this.kits220[selected - 1].title }} </span>
+            <span> {{ this.kitsItem[selected - 1].title }} </span>
           </div>
 
           <div>
@@ -24,7 +26,7 @@
               class="item-info-selected"
             >
               <option
-                v-for="selecte12 in Object.keys(this.kits220)"
+                v-for="selecte12 in Object.keys(this.kitsItem)"
                 :key="selecte12"
               >
                 {{ +selecte12 + 1 }}
@@ -34,7 +36,7 @@
           </div>
 
           <div class="item-info-prix">
-            <h2>{{ this.kits220[this.selected - 1].prix }} DH</h2>
+            <h2>{{ this.kitsItem[this.selected - 1].prix }} DH</h2>
           </div>
         </div>
       </div>
@@ -86,6 +88,7 @@ import items from './components/items.vue'
 import Zone from './components/zone.vue'
 import rulerCell from './components/rulerCell'
 import axios from 'axios'
+import InputSwitch from './components/UI/InputSwitch.vue'
 export default {
   name: 'App',
   data() {
@@ -101,7 +104,7 @@ export default {
       selected: 1,
       kits12: new Array(),
       kits220: new Array(),
-      items: new Array(),
+      kitsItem: new Array(),
       incrementBtn: '<',
       decrementBtn: '>',
       Consommation: 0,
@@ -209,10 +212,11 @@ export default {
     rulerCell,
     items,
     Zone,
+    InputSwitch,
   },
-  async beforeCreate() {
+  created() {
     // get data from the server befre create
-    await axios
+    axios
       .get(`https://api-simulatuer.onrender.com/api/v1/kits`)
       .then(({ data }) => {
         // sort data with puissance
@@ -225,23 +229,23 @@ export default {
             this.kits220.push(vlue)
           }
         }
+        this.handleResize()
       })
       .catch((err) => {
         return err
       })
-    this.handleResize()
-  },
-  created() {
+    this.kitsItem = this.kits220
     this.zoneData = this.zonesData[0]
     window.addEventListener('resize', this.handleResize)
   },
+
   computed: {
     puissanceCom() {
-      return this.kits220[this.selected - 1].puissance * this.zoneData.pes_ete
+      return this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_ete
     },
     widthPuissance() {
       return `width: ${
-        (this.kits220[this.selected - 1].puissance * this.zoneData.pes_ete) /
+        (this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_ete) /
         (this.scaleEnd / 100)
       }%`
     },
@@ -257,9 +261,12 @@ export default {
               `
     },
   },
+  mounted() {
+    this.handleResize()
+  },
   methods: {
     increment() {
-      if (Object.keys(this.kits220).length !== this.selected) {
+      if (Object.keys(this.kitsItem).length !== this.selected) {
         this.selected++
       }
       this.select(this.selected)
@@ -305,13 +312,13 @@ export default {
       const Width = window.document.querySelector('#rulerCell').scrollWidth
 
       const LeftEte =
-        (((this.kits220[this.selected - 1].puissance * this.zoneData.pes_ete) /
+        (((this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_ete) /
           (this.scaleEnd / 100)) *
           Width) /
         100
 
       const LeftHiver =
-        (((this.kits220[this.selected - 1].puissance *
+        (((this.kitsItem[this.selected - 1].puissance *
           this.zoneData.pes_hiver) /
           (this.scaleEnd / 100)) *
           Width) /
@@ -327,22 +334,32 @@ export default {
     chickConso() {
       if (
         this.Consommation <
-        this.kits220[this.selected - 1].puissance * this.zoneData.pes_hiver
+        this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_hiver
       ) {
         this.backround = '#17f635'
       } else if (
         this.Consommation >
-        this.kits220[this.selected - 1].puissance * this.zoneData.pes_ete
+        this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_ete
       ) {
         this.backround = '#ff0000'
       } else if (
         this.Consommation >
-          this.kits220[this.selected - 1].puissance * this.zoneData.pes_hiver ||
+          this.kitsItem[this.selected - 1].puissance *
+            this.zoneData.pes_hiver ||
         this.Consommation <
-          this.kits220[this.selected - 1].puissance * this.zoneData.pes_ete
+          this.kitsItem[this.selected - 1].puissance * this.zoneData.pes_ete
       ) {
         this.backround = '#f67017'
       }
+    },
+    changVoltKits(vl) {
+      if (vl === 12) {
+        this.kitsItem = this.kits12
+      } else if (vl === 220) {
+        this.kitsItem = this.kits220
+      }
+      this.selected = 1
+      this.handleResize()
     },
   },
 }
@@ -390,8 +407,11 @@ h1 {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
 }
 .item-info {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   text-align: center;
+  align-items: center;
 }
 .item-info-title {
   margin-bottom: 1rem;

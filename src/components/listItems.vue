@@ -1,53 +1,56 @@
 <template>
-  <div class="listItem-row" style="justify-content: space-between">
-    <h4>{{ name }}</h4>
-    <span> {{ consommation }} Wh/j </span>
-  </div>
-  <div class="listItem-row">
-    <div class="image">
-      <img :src="image" />
+  <div>
+    <div class="listItem-row" style="justify-content: space-between">
+      <h4>{{ name }}</h4>
+      <span> {{ consommation }} Wh/j </span>
+    </div>
+    <div class="listItem-row">
+      <div class="image">
+        <img :src="image" />
+      </div>
+
+      <div class="calcul">
+        <div class="calcul-row">
+          <button @click="Count('decr')">-</button>
+          <input
+            @keypress="isNumber($event)"
+            type="text"
+            v-model="this.itemCount"
+            @input="Count('chang')"
+          />
+          <label>Unités</label>
+          <button @click="Count('incr')">+</button>
+        </div>
+
+        <div style="margin: 0.5rem 0" class="calcul-row">
+          <button @click="Hours('decr')">-</button>
+          <input
+            @keypress="isNumber($event)"
+            type="text"
+            v-model="this.itemHours"
+            @input="Hours('chang')"
+          />
+          <label>Heures/j</label>
+          <button @click="Hours('incr')">+</button>
+        </div>
+
+        <div class="calcul-row">
+          <button @click="Energy('decr')">-</button>
+          <input
+            @keypress="isNumber($event)"
+            type="text"
+            v-model="this.itemEnergy"
+            @input="Energy('chang')"
+          />
+          <label>Watt</label>
+          <button @click="Energy('incr')">+</button>
+        </div>
+      </div>
     </div>
 
-    <div class="calcul">
-      <div class="calcul-row">
-        <button @click="Count('decr')">-</button>
-        <input
-          @keypress="isNumber($event)"
-          type="text"
-          v-model="this.itemCount"
-          @input="Count('chang')"
-        />
-        <label>Unités</label>
-        <button @click="Count('incr')">+</button>
-      </div>
-
-      <div style="margin: 0.5rem 0" class="calcul-row">
-        <button @click="Hours('decr')">-</button>
-        <input
-          @keypress="isNumber($event)"
-          type="text"
-          v-model="this.itemHours"
-          @input="Hours('chang')"
-        />
-        <label>Heures/j</label>
-        <button @click="Hours('incr')">+</button>
-      </div>
-
-      <div class="calcul-row">
-        <button @click="Energy('decr')">-</button>
-        <input
-          @keypress="isNumber($event)"
-          type="text"
-          v-model="this.itemEnergy"
-          @input="Energy('chang')"
-        />
-        <label>Watt</label>
-        <button @click="Energy('incr')">+</button>
-      </div>
+    <div class="d-btn">
+      <button class="btn" @click="remove(id)">remove</button>
     </div>
-  </div>
-  <div class="d-btn">
-    <button class="btn" @click="remove(id)">remove</button>
   </div>
 </template>
 
